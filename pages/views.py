@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django import forms
 from .models import Product
+from .utils import ImageLocalStorage
 
 
 # =========HOME=========
@@ -77,7 +78,8 @@ class ProductShow(View):
 class ProductList(ListView):
     model = Product
     template_name = 'product_list.html'
-    context_object_name = 'products'  # This will allow you to loop through 'products' in your template
+    # This will allow you to loop through 'products' in your template
+    context_object_name = 'products'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -173,10 +175,11 @@ class CartRemoveAll(View):
         return redirect('cart_index')
 
 
+# =========IMAGES=========
 def ImageFactory(image_storage):
 
     class Image(View):
-        template_name = 'images/index.html'
+        template_name = 'images/images.html'
 
         def get(self, request):
             image_url = request.session.get('image_url', '')
@@ -189,3 +192,17 @@ def ImageFactory(image_storage):
             return redirect('image_index')
 
     return Image
+
+
+class ImageViewNoDI(View):
+    template_name = 'imagesnotid/index.html'
+
+    def get(self, request):
+        image_url = request.session.get('image_url', '')
+        return render(request, self.template_name, {'image_url': image_url})
+
+    def post(self, request):
+        image_storage = ImageLocalStorage()
+        image_url = image_storage.store(request)
+        request.session['image_url'] = image_url
+        return redirect('image_index')

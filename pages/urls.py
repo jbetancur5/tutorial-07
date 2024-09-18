@@ -19,4 +19,8 @@ urlpatterns = [
     path('image/save',
          ImageFactory(ImageLocalStorage()).as_view(),
          name='image_save'),
+    path('imagenotdi/', ImageViewNoDI.as_view(),
+         name='imagenotdi_index'),
+    path('imagenotdi/save', ImageViewNoDI.as_view(),
+         name='imagenotdi_save'),
 ]

@@ -2,6 +2,7 @@ from django.core.files.storage import default_storage
 from django.http import HttpRequest
 from .interfaces import ImageStorage 
 
+
 class ImageLocalStorage(ImageStorage):
     def store(self, request: HttpRequest):
         profile_image = request.FILES.get('profile_image', None)
