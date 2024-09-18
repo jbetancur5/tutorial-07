@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, permissions
 from .serializers import ToDoSerializer
 from todo.models import ToDo
 
@@ -16,3 +16,13 @@ class ToDoListCreate(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         # serializer holds a django model
         serializer.save(user=self.request.user)
+
+
+class TodoRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ToDoSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        # user can only update, delete own posts
+        return ToDo.objects.filter(user=user)
