@@ -7,12 +7,10 @@ from .models import Product
 from .utils import ImageLocalStorage
 
 
-# =========HOME=========
 class Home(TemplateView):
     template_name = "pages/home.html"
 
 
-# =========ABOUT=========
 class About(TemplateView):
     template_name = "pages/about.html"
 
@@ -21,13 +19,12 @@ class About(TemplateView):
         context.update({
             "title": "About us - Online Store",
             "subtitle": "About us",
-            "description": "This is an about page ...",
-            "author": "Developed by: Kokc",
+            "description": "This is an about page...",
+            "author": "Developed by: Martin Betancur",
         })
         return context
 
 
-# =========CONTACT=========
 class Contact(TemplateView):
     template_name = "pages/contact.html"
 
@@ -36,15 +33,14 @@ class Contact(TemplateView):
         context.update({
             "title": "Contact - Online Store",
             "subtitle": "Contact",
-            "mail": "a@a.a",
-            "phone": "1234",
-            "address": "carrea 1a#1-1",
-            "author": "Developed by: Kokc",
+            "mail": "martin@eafit.edu.co",
+            "phone": "3010000000",
+            "address": "UNIVERSIDAD EAFIT",
+            "author": "Developed by: Martin Betancur",
         })
         return context
 
 
-# =========PRODUCTS=========
 class ProductIndex(View):
     template_name = 'products/index.html'
 
@@ -78,7 +74,6 @@ class ProductShow(View):
 class ProductList(ListView):
     model = Product
     template_name = 'product_list.html'
-    # This will allow you to loop through 'products' in your template
     context_object_name = 'products'
 
     def get_context_data(self, **kwargs):
@@ -130,17 +125,14 @@ class Success(View):
         return render(request, self.template_name)
 
 
-# =========CART=========
 class Cart(View):
     template_name = 'cart/index.html'
 
     def get(self, request):
-        # Simulated database for products
         products = {}
-        products[121] = {'name': 'Tv samsung', 'price': '1000'}
-        products[11] = {'name': 'Iphone', 'price': '2000'}
+        products[121] = {'name': 'Tv samsung', 'price': '1500'}
+        products[11] = {'name': 'Iphone', 'price': '4000'}
 
-        # Get cart products from session
         cart_products = {}
         cart_product_data = request.session.get('cart_product_data', {})
 
@@ -148,7 +140,6 @@ class Cart(View):
             if str(key) in cart_product_data.keys():
                 cart_products[key] = product
 
-        # Prepare data for the view
         view_data = {
             'title': 'Cart - Online Store',
             'subtitle': 'Shopping Cart',
@@ -158,7 +149,6 @@ class Cart(View):
         return render(request, self.template_name, view_data)
 
     def post(self, request, product_id):
-        # Get cart products from session and add the new product
         cart_product_data = request.session.get('cart_product_data', {})
         cart_product_data[product_id] = product_id
         request.session['cart_product_data'] = cart_product_data
@@ -168,14 +158,12 @@ class Cart(View):
 class CartRemoveAll(View):
 
     def post(self, request):
-        # Remove all products from cart in session
         if 'cart_product_data' in request.session:
             del request.session['cart_product_data']
 
         return redirect('cart_index')
 
-
-# =========IMAGES=========
+    
 def ImageFactory(image_storage):
 
     class Image(View):
